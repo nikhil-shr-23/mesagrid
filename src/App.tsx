@@ -1,50 +1,84 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import { invoke } from "@tauri-apps/api/core";
-import "./App.css";
+import { useState, useEffect } from "react";
+import { Sidebar } from "@/components/layout/sidebar";
+import { ConnectionDialog } from "@/components/connections/connection-dialog";
+import { QueryEditor } from "@/components/query-editor/query-editor";
+import { WelcomeScreen } from "@/components/welcome-screen";
+import { useConnectionStore, type TableInfo } from "@/stores/connection-store";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import "@/index.css";
 
 function App() {
-  const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
+  const [connectionDialogOpen, setConnectionDialogOpen] = useState(false);
+  const [selectedTable, setSelectedTable] = useState<TableInfo | null>(null);
 
-  async function greet() {
-    // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
-    setGreetMsg(await invoke("greet", { name }));
-  }
+  const {
+    theme,
+    queryTabs,
+    activeTabId,
+    activeConnectionId,
+    addQueryTab,
+    connections,
+  } = useConnectionStore();
+
+  // Apply theme
+  useEffect(() => {
+    const root = document.documentElement;
+    if (theme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+  }, [theme]);
+
+  const handleNewConnection = () => {
+    setConnectionDialogOpen(true);
+  };
+
+  const handleSelectTable = (table: TableInfo) => {
+    setSelectedTable(table);
+    // TODO: Open table viewer
+  };
+
+  const handleOpenQuery = (connectionId: string) => {
+    addQueryTab(connectionId);
+  };
+
+  const activeConnection = connections.find((c) => c.id === activeConnectionId);
+  const activeTab = queryTabs.find((t) => t.id === activeTabId);
+
+  const hasContent = queryTabs.length > 0 || selectedTable;
 
   return (
-    <main className="container">
-      <h1>Welcome to Tauri + React</h1>
+    <TooltipProvider>
+      <div className="flex h-screen w-screen overflow-hidden bg-background text-foreground">
+        {/* Sidebar */}
+        <aside
+          className="flex-shrink-0 border-r border-border"
+          style={{ width: "var(--sidebar-width)" }}
+        >
+          <Sidebar
+            onNewConnection={handleNewConnection}
+            onSelectTable={handleSelectTable}
+            onOpenQuery={handleOpenQuery}
+          />
+        </aside>
 
-      <div className="row">
-        <a href="https://vite.dev" target="_blank">
-          <img src="/vite.svg" className="logo vite" alt="Vite logo" />
-        </a>
-        <a href="https://tauri.app" target="_blank">
-          <img src="/tauri.svg" className="logo tauri" alt="Tauri logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <p>Click on the Tauri, Vite, and React logos to learn more.</p>
+        {/* Main Content */}
+        <main className="flex-1 flex flex-col overflow-hidden">
+          {hasContent ? (
+            <QueryEditor />
+          ) : (
+            <WelcomeScreen onNewConnection={handleNewConnection} />
+          )}
+        </main>
 
-      <form
-        className="row"
-        onSubmit={(e) => {
-          e.preventDefault();
-          greet();
-        }}
-      >
-        <input
-          id="greet-input"
-          onChange={(e) => setName(e.currentTarget.value)}
-          placeholder="Enter a name..."
+        {/* Dialogs */}
+        <ConnectionDialog
+          open={connectionDialogOpen}
+          onOpenChange={setConnectionDialogOpen}
         />
-        <button type="submit">Greet</button>
-      </form>
-      <p>{greetMsg}</p>
-    </main>
+      </div>
+    </TooltipProvider>
   );
 }
 
