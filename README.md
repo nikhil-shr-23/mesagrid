@@ -13,12 +13,12 @@
 
 Most database GUIs ship a full Chromium browser just to render tables. **MesaGrid doesn't.**
 
-|               | MesaGrid    | Electron Apps |
-| ------------- | ----------- | ------------- |
-| ⚡ Startup    | Instant     | 2-5 seconds   |
-| 🧠 Memory     | ~50MB       | 200-500MB     |
-| � Binary Size | ~15MB       | 150MB+        |
-| 🔐 Security   | OS Keychain | Varies        |
+|             | MesaGrid    | Electron Apps |
+| ----------- | ----------- | ------------- |
+| ⚡ Startup  | Instant     | 2-5 seconds   |
+| Memory      | ~50MB       | 200-500MB     |
+| Binary Size | ~15MB       | 150MB+        |
+| Security    | OS Keychain | Varies        |
 
 ---
 
@@ -43,11 +43,11 @@ Most database GUIs ship a full Chromium browser just to render tables. **MesaGri
 - Encrypted credentials (OS keychain)
 - SSH tunneling (Phase 2)
 
-> 🔒 Passwords are **never** stored in plain text.
+> Passwords are **never** stored in plain text.
 
 ---
 
-### ✏️ Query Editor
+### Query Editor
 
 - SQL editor with syntax highlighting (Monaco)
 - Multiple query tabs
@@ -63,7 +63,7 @@ Most database GUIs ship a full Chromium browser just to render tables. **MesaGri
 
 ---
 
-### 📊 Table Viewer
+### Table Viewer
 
 - Browse tables and views
 - Paginated rows (cursor-based)
@@ -71,11 +71,11 @@ Most database GUIs ship a full Chromium browser just to render tables. **MesaGri
 - Add / delete rows
 - Column metadata panel
 
-> ⚠️ **Critical Design Rule:** MesaGrid never loads entire tables into memory.
+> **Critical Design Rule:** MesaGrid never loads entire tables into memory.
 
 ---
 
-### 📋 Result Grid
+### Result Grid
 
 - Sort columns
 - Copy rows as JSON
@@ -142,9 +142,9 @@ Only connection IDs are stored in config files.
 
 ### Query Safety
 
-- ⚠️ Warns on `DROP`, `TRUNCATE`
-- 🔐 Read-only mode toggle
-- ✅ Confirmation dialogs for destructive queries
+- Warns on `DROP`, `TRUNCATE`
+- Read-only mode toggle
+- Confirmation dialogs for destructive queries
 
 ---
 
